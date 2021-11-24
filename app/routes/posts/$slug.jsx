@@ -7,10 +7,10 @@ return getPost(params.slug)
 
 
 export default function PostSlug() {
+
     let post = useLoaderData();
+    
     return (
-        <div>
-            <h1>{post.title}</h1>
-        </div>
-    )
+        <div dangerouslySetInnerHTML={{ __html: post.html }} />
+      );
 }
