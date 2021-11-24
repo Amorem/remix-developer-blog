@@ -4,7 +4,7 @@ import parseFrontMatter from "front-matter";
 
 let postsPath = path.join(__dirname, "../posts");
 
-export default async function getPosts() {
+export async function getPosts() {
   let dir = await fs.readdir(postsPath);
   return Promise.all(
     dir.map(async (filename) => {
@@ -16,4 +16,11 @@ export default async function getPosts() {
       };
     })
   );
+}
+
+export async function getPost(slug) {
+  let filepath = path.join(postsPath, slug + ".md");
+  let file = await fs.readFile(filepath);
+  let { attributes } = parseFrontMatter(file.toString());
+  return { slug, title: attributes.title };
 }
