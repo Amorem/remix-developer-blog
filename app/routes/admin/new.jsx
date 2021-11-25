@@ -1,3 +1,52 @@
+import { redirect, Form, useActionData } from 'remix'
+import { createPost } from '../../post'
+
+export let action = async ({ request }) => {
+    let formData = await request.formData()
+
+    let title = formData.get('title')
+    let slug = formData.get('slug')
+    let markdown = formData.get('markdown')
+
+    let errors = {};
+    if (!title) errors.title = true;
+    if (!slug) errors.slug = true;
+    if (!markdown) errors.markdown = true;
+
+    if (Object.keys(errors).length) { return errors}
+
+    await createPost({ title, slug, markdown })
+    
+    return redirect('/admin')
+}
+
 export default function NewPost() {
-    return <h2>New Post</h2>
+    let errors = useActionData()
+    return (
+        <Form method='post'>
+            <p>
+                <label>
+                    Post Title: {" "}
+                    {errors?.title && <em>Title is required</em>}
+                    <input type='text' name='title' />
+                </label>
+            </p>
+            <p>
+                <label>
+                    Post Slug: {" "}
+                    {errors?.slug && <em>Slug is required</em>}
+                    <input type='text' name='slug' />
+                </label>
+            </p>
+            <p>
+                <label htmlFor="markdown">Mardown</label>{" "}
+                {errors?.markdown && <em>Markdown is required</em>}
+                <br />
+                <textarea rows={20} name="markdown" />
+            </p>
+            <p>
+                <button type="submit">Create Post</button>
+             </p>
+        </Form>
+    );
 }

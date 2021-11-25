@@ -28,3 +28,9 @@ export async function getPost(slug) {
   let html = await processMarkdown(body);
   return { slug, html, title: attributes.title };
 }
+
+export async function createPost(post) {
+  let md = `---\ntitle: ${post.title}\n---\n\n${post.markdown}`;
+  await fs.writeFile(path.join(postsPath, post.slug + ".md"), md);
+  return getPost(post.slug);
+}
